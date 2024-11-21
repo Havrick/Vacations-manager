@@ -17,22 +17,42 @@ header{
  main{
     padding-top: 100px;
  }
+
  th{
-   width: 30px;
    text-align: center;
  }
- .day{
-    height:40px;
-    width: 40px;;
-    text-align: center;
-    border: 1px solid black;
-    
 
+ .day-cell{
+   text-align: left;
  }
- .today{
-   background-color: red;
+
+ .day, .today{
+   height:40px;
+   width: 40px;
+   text-align: left;
+   border: 1px solid black;
  }
+
+.today{
+      background-color: red;
+ }
+
  button{
         cursor: pointer;
         color: #0a0a23;
+ }
+/* TABLE VIEW */
+ #table-view
+ {
+  border: 1px solid black;
+ }
+
+ #table-view td, #table-view th {
+  border: 1px solid black;
+  padding: 4px;
+ }
+
+ #table-view caption
+ {
+    margin-top:20px;
  }
