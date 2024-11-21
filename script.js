@@ -13,6 +13,7 @@ let vacations =[
         name:"Joaquim",
         color:"#00aaff",
         schedule:[
+            {start: "2024-01-01", end: "2024-01-10"},
             { start: "2024-07-01", end: "2024-07-10" },
             { start: "2024-12-20", end: "2024-12-31" },
         ]
@@ -22,22 +23,43 @@ let vacations =[
         color:"#D34C26",
         schedule:[
             {start: "2024-01-01", end: "2024-01-10"},
+            { start: "2025-12-20", end: "2025-12-31" },
+        ]
+    },  
+    {
+        name:"Tiago",
+        color:"#758184",
+        schedule:[
+            {start: "2024-01-01", end: "2024-01-10"},
+            {start: "2024-11-17", end: "2024-11-25"},
         ]
     }
 ]
 
-// This is not ready
-/*
-const isVacation = (date, schedule) => {
-    return schedule.some(({ start, end }) => {
-      const startDate = new Date(start);
-      const endDate = new Date(end);
-      return date >= startDate && date <= endDate;
+// Fuction become a date ("yyyy-mm-dd") format and an object array with dates and check's if the datetoCheck is in rage in the vacation.
+function isVacation (dateToCheck, vacation){
+    const date = new Date(dateToCheck);
+    let result = false;
+    vacation.forEach((item) => {
+        const start = new Date(item.start);
+        const end = new Date(item.end);
+        if (date >= start && date<= end){
+            result = true;
+        }
     });
-  };
+    return result;
+  }
 
-console.log(isVacation("2024-07-02", vacations.schedule));
-*/
+function checkVacation(dateToCheck){
+    const date = new Date(dateToCheck);
+    let result = '<div class="vacation-day">';
+    vacations.forEach((worker)=>{
+        if(isVacation(date, worker.schedule)){
+            result += `<div style="background-color: ${worker.color}">${worker.name}</div>`;
+        }
+    });
+    return result + '</div>';
+}
 const todayDate = new Date();
 let year = todayDate.getFullYear();
 
@@ -68,7 +90,8 @@ function makeTable(year){
         for (let day = 0, weekDayPointer = 0; day <= 36; day ++ ){
             if (currentDate.getDay() == weekDayPointer && currentDate <= lastDay){
                 // Add the day to the table and compare the currentDate with todayDate to change the class.
-                table += `<td class="${currentDate.setHours(0,0,0,0) === todayDate.setHours(0,0,0,0) ? "today" : "day"}"><div class="day-cell"> ${currentDate.getDate()}</div> </td>`;
+                table += `<td class="day"><div class="day-cell ${currentDate.setHours(0,0,0,0) === todayDate.setHours(0,0,0,0) ? "today" : ""}"> ${currentDate.getDate()}</div>`;
+                table += checkVacation(currentDate);
                 currentDate.setDate(currentDate.getDate() + 1);
             } else {
                 table += `<td></td>`;
