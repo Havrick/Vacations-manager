@@ -36,19 +36,25 @@ let vacations =[
     }
 ]
 
-// Fuction become a date ("yyyy-mm-dd") format and an object array with dates and check's if the datetoCheck is in rage in the vacation.
-function isVacation (dateToCheck, vacation){
+// Fuction become a date ("yyyy-mm-dd") format and an object array with dates and check's if the datetoCheck is in range in the vacation.
+function isVacation (dateToCheck, schedule){
     const date = new Date(dateToCheck);
-    let result = false;
-    vacation.forEach((item) => {
+    /*let result = false;
+    result = schedule.find((item) => {
         const start = new Date(item.start);
         const end = new Date(item.end);
         if (date >= start && date<= end){
-            result = true;
+            return true;
         }
-    });
+    });*/
+    return schedule.find((vacation)=> {
+        const start = new Date(vacation.start);
+        const end = new Date(vacation.end);
+        return date >= start && date <= end;
+});
     return result;
   }
+
 
 function checkVacation(dateToCheck){
     const date = new Date(dateToCheck);
@@ -91,7 +97,7 @@ function makeTable(year){
             if (currentDate.getDay() == weekDayPointer && currentDate <= lastDay){
                 // Add the day to the table and compare the currentDate with todayDate to change the class.
                 table += `<td class="day"><div class="day-cell ${currentDate.setHours(0,0,0,0) === todayDate.setHours(0,0,0,0) ? "today" : ""}"> ${currentDate.getDate()}</div>`;
-                table += checkVacation(currentDate);
+                table += checkVacation(currentDate) + "</td>";
                 currentDate.setDate(currentDate.getDate() + 1);
             } else {
                 table += `<td></td>`;
@@ -99,6 +105,63 @@ function makeTable(year){
             weekDayPointer = weekDayPointer >= 6 ? 0 : weekDayPointer + 1;
         }
         table += `</tr>`;
+    }
+    table +=`</table>`;
+    view.innerHTML = table;
+   
+}
+// another version of make table
+function makeYearTable(year){
+    view.innerHTML = "";
+    
+    const firstDay = new Date(year, 0, 1);
+    const lastDayOfTheYear = new Date(year, 11 + 1, 0);
+    let vacationTableRows;
+    let table = `
+    <h2>${firstDay.getFullYear()}</h2>
+    <table id="year-view">
+    `;
+ 
+    table += `<tr>`;
+
+    for (let day = -1, weekDayPointer = 0; day <= 36; day ++ ){
+        if(day === -1 ){
+            table += `<th></th>`;
+        } else {
+            table += `<th> ${weekDay[weekDayPointer]} </th>`;
+            weekDayPointer = weekDayPointer >= 6 ? 0 : weekDayPointer + 1;
+        }
+        
+    }
+    for(let currentDate = firstDay; currentDate <= lastDayOfTheYear; ){
+        const lastDay = new Date(year, currentDate.getMonth() + 1, 0);
+        table += `<tr><td class="month" >${month[currentDate.getMonth()]}</td>`;
+        for (let day = 0, weekDayPointer = 0; day <= 36; day ++ ){
+            if (currentDate.getDay() == weekDayPointer && currentDate <= lastDay){
+                // Add the day to the table and compare the currentDate with todayDate to change the class.
+                table += `<td class="day"><div class="day-cell ${currentDate.setHours(0,0,0,0) === todayDate.setHours(0,0,0,0) ? "today" : ""}"> ${currentDate.getDate()}</div>`;
+                table += checkVacation(currentDate) + "</td>";
+                vacations.forEach((worker)=>{
+                    vacations.forEach((worker)=>{
+                        vacationTableRows += `<td>${worker.name}</td>`;
+                        if(isVacation(currentDate, worker.schedule)){
+                            vacationTableRows += `<td style="background-color: ${worker.color}"></td>`;
+                        } else {
+                            vacationTableRows +=`<td></td>`;
+                        }
+                    vacationTableRows += "";
+                    });
+                }); 
+
+                currentDate.setDate(currentDate.getDate() + 1);
+            } else {
+                table += `<td></td>`;
+            }
+            weekDayPointer = weekDayPointer >= 6 ? 0 : weekDayPointer + 1;
+        }
+       
+        table += `</tr>` + vacationTableRows;
+        vacationTableRows = "";
     }
     table +=`</table>`;
     view.innerHTML = table;
